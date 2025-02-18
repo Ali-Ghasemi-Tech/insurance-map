@@ -14,9 +14,6 @@
     "**/*.jsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-<<<<<<< HEAD
 ,   "app/index.jsx"  ]
-=======
-, "app/index.jsx"  ]
->>>>>>> 413835119aef642f2d7c49c7a8f23f2c71312c32
+
 }

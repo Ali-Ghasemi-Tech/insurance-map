@@ -1,12 +1,9 @@
 {
   "expo": {
-<<<<<<< HEAD
+
     "name": "my_app",
     "slug": "my_app",
-=======
-    "name": "DemoApp",
-    "slug": "DemoApp",
->>>>>>> 413835119aef642f2d7c49c7a8f23f2c71312c32
+
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -28,21 +25,11 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-<<<<<<< HEAD
       [
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-=======
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
->>>>>>> 413835119aef642f2d7c49c7a8f23f2c71312c32
+
         }
       ]
     ],
