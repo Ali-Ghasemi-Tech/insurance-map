@@ -14,6 +14,8 @@ const MyLocationComponent = () => {
   const [destinations, setDestination] = useState([])
   const [markers, setMarkers] = useState([])
   const [destinationsReady, setDestinationReady] = useState(false)
+  const [firstRunDone , setFristRunDone] = useState(false)
+  const [isLoading, setIsLoading] = useState(true);
 
 
 
@@ -35,6 +37,8 @@ const MyLocationComponent = () => {
         });
 
       setLocation(location);
+      setIsLoading(false); 
+
     })();
   }, []);
 
@@ -42,35 +46,34 @@ const MyLocationComponent = () => {
   useEffect(() => {
     const handleApi = async () => {
       console.log('start')
-      if (location) {
 
-        try {
-          console.log('django running')
-          const response = await fetch(`https://insuranceapp.pythonanywhere.com/api/?insurance_name=${encodeURIComponent(searchValue.trim())}&lat=${location? location.coords.latitude: 35.700264661345145}&lng=${location? location.coords.longitude: 51.337807322871065}`, {
-            method: "GET",
-            redirect: "follow",
-            android: { useCleartextTraffic: true },
-          });
-          if (!response.ok) {
-            throw new Error(response.status)
-          }
-          const data = await response.json();
-          console.log(data.locations)
-          setDestination(data.locations);
-          console.log('api ready')
-          setDestinationReady(true)
-          
+      try {
+        console.log('django running')
+        const response = await fetch(`https://insurance.liara.run/api/?insurance_name=${searchValue.trim()}&lat=${location?location.coords.latitude:35.700264661345145}&lng=${location?location.coords.longitude:51.337807322871065}`, {
+          method: "GET",
+          redirect: "follow",
+          android: { useCleartextTraffic: true },
+        });
+        if (!response.ok) {
+          throw new Error(response.status)
+        }
+        const data = await response.json();
+        console.log(data.locations)
+        setDestination(data.locations);
+        console.log('api ready')
+        setDestinationReady(true)
+        
 
-        }
-        catch (e) {
-          console.error(e.message)
-        }
-      };
+      }
+      catch (e) {
+        console.error(e.message)
+      }
+      
     }
 
+    setFristRunDone(true)
 
-
-    if (!destinationsReady) {
+    if (!destinationsReady && firstRunDone) {
       handleApi();
     }
 
@@ -82,8 +85,8 @@ const MyLocationComponent = () => {
         <Marker
         key={index}
         coordinate={{
-          latitude: item.location.y,
-          longitude: item.location.x,
+          latitude: item.geom.coordinates[1],
+          longitude: item.geom.coordinates[0],
         }}
         title={item.title}
         description={item.address}
@@ -107,12 +110,13 @@ const MyLocationComponent = () => {
 
 
   return (
+    
     <View style={{ flex: 1 }}>
         <MapView
           loadingEnabled = {true}
           followsUserLocation = {true}
           style={{ flex: 1 }}
-          initialRegion={{
+          region={{
             latitude: location?location.coords.latitude:35.700264661345145,
             longitude: location? location.coords.longitude: 51.337807322871065,
             latitudeDelta: 0.0922,
