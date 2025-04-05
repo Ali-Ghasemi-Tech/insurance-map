@@ -85,112 +85,134 @@ var items = [
 ];
 
 
+
 function App() {
-  const [selectedItem, setSelectedItem] = useState(items[0]); // Initial selected item
-
-  const handleApi = (id) => {
-    console.log(id)
-    return (<Link href="/map"></Link>)
-  }
-
-
+  const [selectedItem, setSelectedItem] = useState(items[0]);
 
   const styles = StyleSheet.create({
-    selectContainer: {
-      marginTop: 50,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 10,
+    container: {
+      flex: 1,
+      backgroundColor: '#F0F4F8',
+      paddingHorizontal: 20,
     },
-    selectHeader: {
+    headerContainer: {
+      borderBottomWidth: 1,
+      borderBottomColor: '#E2E8F0',
+      paddingBottom: 24,
+      marginTop: 40,
+    },
+    headerText: {
       fontSize: 20,
-      direction: 'rtl'
+      color: '#2D3748',
+      textAlign: 'right',
+      lineHeight: 30,
+      fontWeight: '600',
     },
-    selectText: {
-
-      color: "white",
-
-
+    dropdownTitle:{
+      fontSize: 10,
+      color: '#2D3748',
+      textAlign: 'right',
+      lineHeight: 30,
+      fontWeight: '600',
     },
-    selectButton: {
-      display: 'flex',
-      width: '90%',
-      marginHorizontal: 'auto',
-
-      backgroundColor: 'blue',
+    dropdownContainer: {
+      marginTop: 40,
+    },
+    dropdownInput: {
+      backgroundColor: 'white',
+      borderRadius: 12,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: '#E2E8F0',
+      fontSize: 16,
+      color: '#2D3748',
+    },
+    dropdownItem: {
+      padding: 16,
+      backgroundColor: 'white',
+      borderBottomWidth: 1,
+      borderBottomColor: '#E2E8F0',
+    },
+    
+    buttonText: {
+      backgroundColor: '#4248fc', // More vibrant green
+      borderRadius: 12,
+      height: 56, // Fixed height
+      width: '100%',
       justifyContent: 'center',
       alignItems: 'center',
-      height: 40
-
-    }
-
-
+      marginTop: 24,
+      elevation: 3,
+      color: 'white',
+      fontSize: 18,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      textAlignVertical: 'center',
+      includeFontPadding: false,
+    },
+    buttonPressed: {
+      opacity: 0.9,
+      transform: [{ scale: 0.98 }],
+    },
   });
 
-
-
-
   return (
-    <Fragment>
-      <Text style={styles.selectHeader}>با انتخاب بیمه ای که داری میتونی بیمارستانایی که نزدیکتن و بیمه تو هم پوشش میدن پیدا کنی</Text>
-      <View style={styles.selectContainer}>
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>
+          با انتخاب بیمه ای که داری میتونی بیمارستانایی که نزدیکتن و بیمه تو هم پوشش میدن پیدا کنی
+        </Text>
+      </View>
+
+      <View style={styles.dropdownContainer}>
+        <Text style={styles.dropdownTitle}>نام بیمه</Text>
         <SearchableDropdown
-          onItemSelect={(item) => {
-            let items = selectedItem;
-            items = item
-            setSelectedItem(item);
-          }}
-          containerStyle={{ padding: 5 }}
-          onRemoveItem={(item, index) => {
-            const items = this.state.selectItem.filter((sitem) => sitem.id !== item.id);
-            this.setState({ selectItem: items });
-          }}
-          itemStyle={{
-            padding: 10,
-            marginTop: 2,
-            backgroundColor: '#ddd',
-            borderColor: '#bbb',
-            borderWidth: 1,
-            borderRadius: 5,
-          }}
-          itemTextStyle={{ color: '#222', direction: 'rtl' }}
-          itemsContainerStyle={{ maxHeight: 140 }}
+          onItemSelect={setSelectedItem}
           items={items}
           defaultIndex={2}
           resetValue={false}
-          textInputProps={
-            {
-              placeholder: selectedItem.name,
-              underlineColorAndroid: "transparent",
-              style: {
-                direction: 'rtl',
-                padding: 12,
-                borderWidth: 1,
-                borderColor: '#ccc',
-                borderRadius: 5,
-              },
-            }
-          }
-          listProps={
-            {
-              nestedScrollEnabled: true,
-            }
-          }
+          itemStyle={styles.dropdownItem}
+          itemTextStyle={{
+            color: '#2D3748',
+            textAlign: 'right',
+            fontSize: 16,
+          }}
+          itemsContainerStyle={{
+            backgroundColor: 'white',
+            borderRadius: 12,
+            marginTop: 8,
+            maxHeight: 200,
+          }}
+          textInputProps={{
+            placeholder: selectedItem.name,
+            style: styles.dropdownInput,
+            placeholderTextColor: '#718096',
+            underlineColorAndroid: 'transparent',
+          }}
         />
-        <Link href={{ pathname: '/map', params: { searchValue: selectedItem.name, searchId: selectedItem.id } }} asChild>
-          <Pressable style={styles.selectButton}>
-            <Text style={styles.selectText}>جستجو</Text>
+
+        <Link
+          href={{
+            pathname: '/map',
+            params: {
+              searchValue: selectedItem.name,
+              searchId: selectedItem.id
+            }
+          }}
+          asChild
+        >
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              pressed && styles.buttonPressed,
+            ]}
+          >
+            <Text style={styles.buttonText}>جستجو</Text>
           </Pressable>
         </Link>
       </View>
-    </Fragment>
+    </View>
   );
-
-
-
 }
 
-
-
-
-export default App
+export default App;

@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useLocalSearchParams } from 'expo-router';
-import { useEvent } from 'react-native-reanimated';
+
 
 
 const MyLocationComponent = () => {
@@ -55,7 +55,7 @@ const MyLocationComponent = () => {
           android: { useCleartextTraffic: true },
         });
         if (!response.ok) {
-          throw new Error(response.status)
+          throw new Error('مشکلی برای سرور پیش آمده لطفا مشکل را گزارش دهید')
         }
         const data = await response.json();
         console.log(data.locations)
@@ -142,3 +142,5 @@ const MyLocationComponent = () => {
 };
 
 export default MyLocationComponent;
+
+
