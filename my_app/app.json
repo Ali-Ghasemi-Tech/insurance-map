@@ -1,10 +1,11 @@
 {
   "expo": {
     "name": "bimeyab",
-    "slug": "my_app",
+    "slug": "bimeyab",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
+    "backgroundColor":"gray ",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

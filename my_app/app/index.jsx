@@ -84,10 +84,20 @@ var items = [
 
 ];
 
+var city = [
+  {id: 0 , name:'مکان فعلی من'},
+  {id: 1 , name:'تهران'},
+  {id: 2 , name:'کرج'},
+  {id: 3 , name:'مشهد'},
+  {id: 4 , name:'شیراز'},
+  {id: 5 , name:'اصفحان'},
+]
+
 
 
 function App() {
   const [selectedItem, setSelectedItem] = useState(items[0]);
+  const [selectCity , setSelectedCity] = useState(city[0])
 
   const styles = StyleSheet.create({
     container: {
@@ -163,7 +173,7 @@ function App() {
           با انتخاب بیمه ای که داری میتونی بیمارستانایی که نزدیکتن و بیمه تو هم پوشش میدن پیدا کنی
         </Text>
       </View>
-
+      {/* select insurance */}
       <View style={styles.dropdownContainer}>
         <Text style={styles.dropdownTitle}>نام بیمه</Text>
         <SearchableDropdown
@@ -191,12 +201,46 @@ function App() {
           }}
         />
 
-        <Link
+        
+      </View>
+      {/* select location */}
+      <View >
+        <Text style={styles.dropdownTitle}>نام شهر (درصورت استفاده از GPS گزینه ای انتخاب نکنید)</Text>
+        <SearchableDropdown
+          onItemSelect={setSelectedCity}
+          items={city}
+          defaultIndex={2}
+          resetValue={false}
+          itemStyle={styles.dropdownItem}
+          itemTextStyle={{
+            color: '#2D3748',
+            textAlign: 'right',
+            fontSize: 16,
+          }}
+          itemsContainerStyle={{
+            backgroundColor: 'white',
+            borderRadius: 12,
+            marginTop: 8,
+            maxHeight: 200,
+          }}
+          textInputProps={{
+            placeholder: selectCity.name,
+            style: styles.dropdownInput,
+            placeholderTextColor: '#718096',
+            underlineColorAndroid: 'transparent',
+          }}
+        />
+
+        
+      </View>
+      <Link
           href={{
             pathname: '/map',
             params: {
-              searchValue: selectedItem.name,
-              searchId: selectedItem.id
+              searchValue:selectedItem.name,
+              searchId: selectedItem.id,
+              searchCity: selectCity.name,
+              cityId: selectCity.id,
             }
           }}
           asChild
@@ -210,7 +254,6 @@ function App() {
             <Text style={styles.buttonText}>جستجو</Text>
           </Pressable>
         </Link>
-      </View>
     </View>
   );
 }

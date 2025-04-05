@@ -7,7 +7,7 @@ import { useLocalSearchParams } from 'expo-router';
 
 
 const MyLocationComponent = () => {
-  const { searchValue, searchId } = useLocalSearchParams();
+  const { searchValue, searchId , searchCity } = useLocalSearchParams();
 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -16,7 +16,6 @@ const MyLocationComponent = () => {
   const [destinationsReady, setDestinationReady] = useState(false)
   const [firstRunDone , setFristRunDone] = useState(false)
   const [isLoading, setIsLoading] = useState(true);
-
 
 
 
