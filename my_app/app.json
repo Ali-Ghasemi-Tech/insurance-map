@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "backgroundColor":"gray ",
+    "backgroundColor": "gray ",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -40,7 +40,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "093d8e98-a37d-4ed2-9cda-4789fa8b75da"
+        "projectId": "9d360dcb-6174-4c93-855b-a17e50ae7260"
       }
     }
   }
