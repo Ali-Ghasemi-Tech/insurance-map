@@ -85,12 +85,12 @@ var items = [
 ];
 
 var city = [
-  {id: 0 , name:'مکان فعلی من'},
-  {id: 1 , name:'تهران'},
-  {id: 2 , name:'کرج'},
-  {id: 3 , name:'مشهد'},
-  {id: 4 , name:'شیراز'},
-  {id: 5 , name:'اصفحان'},
+  {id: 0 , name:'مکان فعلی من', coords:{lat: 35.700264661345145, lng:51.337807322871065}},
+  {id: 1 , name:'تهران' , coords:{lat: 35.700264661345145, lng:51.337807322871065}},
+  {id: 2 , name:'کرج'  , coords:{lat: 35.82928694170145, lng:50.96736705072482}},
+  {id: 3 , name:'مشهد'  , coords:{lat: 36.297927914911895, lng:59.60590934522712}},
+  {id: 4 , name:'شیراز'  , coords:{lat: 29.609164769331223, lng:52.5320795545391}},
+  {id: 5 , name:'اصفحان'  , coords:{lat: 32.65528067364776, lng:51.67512579396133}},
 ]
 
 
@@ -241,6 +241,7 @@ function App() {
               searchId: selectedItem.id,
               searchCity: selectCity.name,
               cityId: selectCity.id,
+              cityCoords : JSON.stringify(selectCity.coords),
             }
           }}
           asChild

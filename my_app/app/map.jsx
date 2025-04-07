@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useLocalSearchParams } from 'expo-router';
 import { WebView } from 'react-native-webview';
@@ -9,7 +8,7 @@ import { WebView } from 'react-native-webview';
 
 
 const MyLocationComponent = () => {
-  const { searchValue, searchId, searchCity } = useLocalSearchParams();
+  const { searchValue, searchId, searchCity , cityCoords  } = useLocalSearchParams();
 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -20,7 +19,7 @@ const MyLocationComponent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [mapHtml, setMapHtml] = useState(null);
 
-
+  const coords = JSON.parse(cityCoords);
   
 
 
@@ -56,7 +55,6 @@ const MyLocationComponent = () => {
         const response = await fetch(`https://insurance.liara.run/api/?insurance_name=${searchValue.trim()}&lat=${location ? location.coords.latitude : 35.700264661345145}&lng=${location ? location.coords.longitude : 51.337807322871065}`, {
           method: "GET",
           redirect: "follow",
-          android: { useCleartextTraffic: true },
         });
         if (!response.ok) {
           throw new Error('مشکلی برای سرور پیش آمده لطفا مشکل را گزارش دهید')
@@ -138,7 +136,9 @@ const MyLocationComponent = () => {
       <body>
         <div id="map"></div>
         <script>
-          var map = L.map('map').setView([35.700264661345145, 51.337807322871065], 13);
+          var cityLat = ${coords.lat}
+          var cityLng = ${coords.lng}
+          var map = L.map('map').setView([cityLat, cityLng], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
               maxZoom: 19,
               attribution: '© OpenStreetMap contributors'
@@ -155,9 +155,15 @@ const MyLocationComponent = () => {
 
           
           markerList.forEach((marker) => {
+            var popupContent = 
+              "<b>" + marker.title + "</b><br>" + marker.description + "<br>" +
+              "<a href='geo:" + marker.lat + "," + marker.lng + "?q=" + encodeURIComponent(marker.title) + "' target='_blank' style='display:inline-block; margin:4px 0; padding:6px 12px; background-color:#007BFF; color:#fff; text-decoration:none; font-weight:bold; border-radius:5px;'>📍 باز کردن نقشه</a><br>" +
+              "<a href='https://www.google.com/maps/dir/?api=1&destination=" + marker.lat + "," + marker.lng + "' target='_blank' style='display:inline-block; margin:4px 0; padding:6px 12px; background-color:#007BFF; color:#fff; text-decoration:none; font-weight:bold; border-radius:5px;'>🗺️ باز کردن در گوگل مپس</a>";
+
             L.marker([marker.lat, marker.lng])
               .addTo(map)
-              .bindPopup("<b>" + marker.title + "</b><br>" + marker.description);
+              .bindPopup(popupContent);
+
             bounds.push([marker.lat, marker.lng]);
           });
 
@@ -182,7 +188,6 @@ const MyLocationComponent = () => {
       </body>
     </html>
     `;
-    console.log(html)
   return (
 
     <View style={{ flex: 1 }}>

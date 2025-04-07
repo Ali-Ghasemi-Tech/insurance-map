@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "bimeyab",
-    "slug": "bimeyab",
+    "slug": "bime-yab",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -17,10 +17,12 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "icon": "./assets/icon.png",
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
-      ]
+      ],
+      "package": "com.ali_ghasemi_tech.bimeyab"
     },
     "web": {
       "bundler": "metro",
@@ -40,7 +42,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "9d360dcb-6174-4c93-855b-a17e50ae7260"
+        "projectId": "35f04e80-ad8f-45c9-8834-aa89578fbfd8"
       }
     }
   }
