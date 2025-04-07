@@ -18,42 +18,10 @@ const MyLocationComponent = () => {
   const [destinationsReady, setDestinationReady] = useState(false)
   const [firstRunDone, setFristRunDone] = useState(false)
   const [isLoading, setIsLoading] = useState(true);
+  const [mapHtml, setMapHtml] = useState(null);
 
-  const html = `
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Leaflet OSM Map</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      html, body, #map {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  </head>
-  <body>
-    <div id="map"></div>
-    <script>
-      var map = L.map('map').setView([37.78825, -122.4324], 13);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
 
-      var marker = L.marker([37.78825, -122.4324]).addTo(map);
-
-      marker.bindPopup("<b>Hello!</b><br>This is San Francisco.").openPopup();
-    </script>
-  </body>
-</html>
-`;
+  
 
 
   // user location
@@ -118,20 +86,18 @@ const MyLocationComponent = () => {
 
   const markerCreator = () => {
     const newMarkers = destinations.map((item, index) => (
-      <Marker
-        key={index}
-        coordinate={{
-          latitude: item.geom.coordinates[1],
-          longitude: item.geom.coordinates[0],
-        }}
-        title={item.title}
-        description={item.address}
-
-      />
+      {
+        id: index,
+        lat: item.geom.coordinates[1],
+        lng: item.geom.coordinates[0],
+        title: item.title,
+        description: item.address
+      }
 
 
     ));
     setMarkers(newMarkers)
+
   }
 
 
@@ -142,9 +108,81 @@ const MyLocationComponent = () => {
     }
   }, [destinationsReady]);
 
+  
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Leaflet OSM Map</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          html, body, #map {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+          }
+          .user-location-icon {
+          background-color:rgb(55, 183, 237); /* User location color (Green) */
+          border-radius: 50%; /* Make it circular */
+          width: 10px;
+          height: 10px;
+          border: 2px solid white; /* Optional border around the marker */
+        }
+        </style>
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+      </head>
+      <body>
+        <div id="map"></div>
+        <script>
+          var map = L.map('map').setView([35.700264661345145, 51.337807322871065], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              maxZoom: 19,
+              attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
 
+          
+          var markerList = ${JSON.stringify(markers)};
 
+          
+          var userLat = ${location?.coords?.latitude || null};
+          var userLng = ${location?.coords?.longitude || null};
 
+          var bounds = [];
+
+          
+          markerList.forEach((marker) => {
+            L.marker([marker.lat, marker.lng])
+              .addTo(map)
+              .bindPopup("<b>" + marker.title + "</b><br>" + marker.description);
+            bounds.push([marker.lat, marker.lng]);
+          });
+
+          if (userLat !== null && userLng !== null) {
+          var userIcon = L.divIcon({
+            className: 'user-location-icon',
+            iconSize: [10, 10], // Size of the marker
+            
+            popupAnchor: [0, -20] // Position for the popup
+          });
+
+          L.marker([userLat, userLng], { icon: userIcon })
+            .addTo(map)
+            .bindPopup("<b>موقعیت شما</b>");
+          bounds.push([userLat, userLng]);
+        }
+
+          if (bounds.length > 0) {
+            map.fitBounds(bounds);
+          }
+        </script>
+      </body>
+    </html>
+    `;
+    console.log(html)
   return (
 
     <View style={{ flex: 1 }}>
