@@ -1,4 +1,4 @@
-package com.anonymous.my_app
+package com.ali_ghasemi_tech.bimeyab
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

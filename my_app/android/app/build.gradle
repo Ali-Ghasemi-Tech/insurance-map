@@ -86,9 +86,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.anonymous.my_app'
+    namespace "com.bimeyab"
     defaultConfig {
-        applicationId 'com.anonymous.my_app'
+        applicationId 'com.ali_ghasemi_tech.bimeyab'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
