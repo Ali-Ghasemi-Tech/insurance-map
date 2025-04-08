@@ -1,9 +1,11 @@
 import { Stack } from "expo-router";
 import { View, StyleSheet } from 'react-native';
+import { StatusBar } from "expo-status-bar";
 
 
 export default function RootLayout() {
-  return (
+  return (<>
+    <StatusBar style="auto" hidden={false} />
     <Stack
       screenOptions={{
         headerTitleAlign: 'center', // Align title to right for RTL        
@@ -14,6 +16,7 @@ export default function RootLayout() {
           headerTitle: 'بیمه یاب',
           headerShown: true,
           headerStyle: {
+
             backgroundColor: '#4248fc',
             // Valid property
           },
@@ -35,15 +38,17 @@ export default function RootLayout() {
             backgroundColor: '#4248fc',
           },
           headerShadowVisible: false,
-          headerTintColor :'white',
+          headerTintColor: 'white',
           headerTitleStyle: {
             fontSize: 20,
             fontWeight: 'bold',
             color: 'white',
-          }
+          },
         }}
       />
     </Stack>
+  </>
+
   );
 }
 

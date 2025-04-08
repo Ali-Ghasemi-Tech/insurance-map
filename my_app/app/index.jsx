@@ -1,7 +1,18 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Keyboard,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView
+} from "react-native";
+
 import SearchableDropdown from "react-native-searchable-dropdown";
 import { useNavigation } from '@react-navigation/native';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from 'expo-router';
 
 
@@ -85,19 +96,34 @@ var items = [
 ];
 
 var city = [
-  {id: 0 , name:'مکان فعلی من', coords:{lat: 35.700264661345145, lng:51.337807322871065}},
-  {id: 1 , name:'تهران' , coords:{lat: 35.700264661345145, lng:51.337807322871065}},
-  {id: 2 , name:'کرج'  , coords:{lat: 35.82928694170145, lng:50.96736705072482}},
-  {id: 3 , name:'مشهد'  , coords:{lat: 36.297927914911895, lng:59.60590934522712}},
-  {id: 4 , name:'شیراز'  , coords:{lat: 29.609164769331223, lng:52.5320795545391}},
-  {id: 5 , name:'اصفحان'  , coords:{lat: 32.65528067364776, lng:51.67512579396133}},
+  { id: 0, name: 'مکان فعلی من', coords: { lat: 35.700264661345145, lng: 51.337807322871065 } },
+  { id: 1, name: 'تهران', coords: { lat: 35.700264661345145, lng: 51.337807322871065 } },
+  { id: 2, name: 'کرج', coords: { lat: 35.82928694170145, lng: 50.96736705072482 } },
+  { id: 3, name: 'مشهد', coords: { lat: 36.297927914911895, lng: 59.60590934522712 } },
+  { id: 4, name: 'شیراز', coords: { lat: 29.609164769331223, lng: 52.5320795545391 } },
+  { id: 5, name: 'اصفحان', coords: { lat: 32.65528067364776, lng: 51.67512579396133 } },
 ]
 
 
 
 function App() {
   const [selectedItem, setSelectedItem] = useState(items[0]);
-  const [selectCity , setSelectedCity] = useState(city[0])
+  const [selectCity, setSelectedCity] = useState(city[0]);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', (e) => {
+      setKeyboardHeight(e.endCoordinates.height);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   const styles = StyleSheet.create({
     container: {
@@ -108,17 +134,18 @@ function App() {
     headerContainer: {
       borderBottomWidth: 1,
       borderBottomColor: '#E2E8F0',
-      paddingBottom: 24,
-      marginTop: 40,
+
+      paddingTop: 40
     },
     headerText: {
       fontSize: 20,
       color: '#2D3748',
-      textAlign: 'right',
+      textAlign: 'justify',
       lineHeight: 30,
       fontWeight: '600',
+      direction: 'rtl',
     },
-    dropdownTitle:{
+    dropdownTitle: {
       fontSize: 10,
       color: '#2D3748',
       textAlign: 'right',
@@ -143,7 +170,7 @@ function App() {
       borderBottomWidth: 1,
       borderBottomColor: '#E2E8F0',
     },
-    
+
     buttonText: {
       backgroundColor: '#4248fc', // More vibrant green
       borderRadius: 12,
@@ -167,95 +194,107 @@ function App() {
   });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>
-          با انتخاب بیمه ای که داری میتونی بیمارستانایی که نزدیکتن و بیمه تو هم پوشش میدن پیدا کنی
-        </Text>
-      </View>
-      {/* select insurance */}
-      <View style={styles.dropdownContainer}>
-        <Text style={styles.dropdownTitle}>نام بیمه</Text>
-        <SearchableDropdown
-          onItemSelect={setSelectedItem}
-          items={items}
-          defaultIndex={2}
-          resetValue={false}
-          itemStyle={styles.dropdownItem}
-          itemTextStyle={{
-            color: '#2D3748',
-            textAlign: 'right',
-            fontSize: 16,
-          }}
-          itemsContainerStyle={{
-            backgroundColor: 'white',
-            borderRadius: 12,
-            marginTop: 8,
-            maxHeight: 200,
-          }}
-          textInputProps={{
-            placeholder: selectedItem.name,
-            style: styles.dropdownInput,
-            placeholderTextColor: '#718096',
-            underlineColorAndroid: 'transparent',
-          }}
-        />
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'android' ? 0 : 64}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={[styles.container, { paddingBottom: keyboardHeight || 160 }]}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerText}>
+              با انتخاب بیمه ای که داری میتونی بیمارستانایی که نزدیکتن و بیمه تو هم پوشش میدن پیدا کنی
+            </Text>
+          </View>
+          {/* select insurance */}
+          <ScrollView>
+          <View style={{gap : 15 , marginTop: 40}}>
+            <View >
+              <Text style={styles.dropdownTitle}>نام بیمه</Text>
+              <SearchableDropdown
+                onItemSelect={setSelectedItem}
+                items={items}
+                defaultIndex={0}
+                resetValue={false}
+                itemStyle={styles.dropdownItem}
+                itemTextStyle={{
+                  color: '#2D3748',
+                  textAlign: 'right',
+                  fontSize: 16,
+                }}
+                itemsContainerStyle={{
+                  backgroundColor: 'white',
+                  borderRadius: 12,
+                  marginTop: 8,
+                  maxHeight: 200,
+                }}
+                textInputProps={{
+                  placeholder: selectedItem.name,
+                  style: styles.dropdownInput,
+                  placeholderTextColor: '#718096',
+                  underlineColorAndroid: 'transparent',
+                }}
+              />
 
-        
-      </View>
-      {/* select location */}
-      <View >
-        <Text style={styles.dropdownTitle}>نام شهر (درصورت استفاده از GPS گزینه ای انتخاب نکنید)</Text>
-        <SearchableDropdown
-          onItemSelect={setSelectedCity}
-          items={city}
-          defaultIndex={2}
-          resetValue={false}
-          itemStyle={styles.dropdownItem}
-          itemTextStyle={{
-            color: '#2D3748',
-            textAlign: 'right',
-            fontSize: 16,
-          }}
-          itemsContainerStyle={{
-            backgroundColor: 'white',
-            borderRadius: 12,
-            marginTop: 8,
-            maxHeight: 200,
-          }}
-          textInputProps={{
-            placeholder: selectCity.name,
-            style: styles.dropdownInput,
-            placeholderTextColor: '#718096',
-            underlineColorAndroid: 'transparent',
-          }}
-        />
 
-        
-      </View>
-      <Link
-          href={{
-            pathname: '/map',
-            params: {
-              searchValue:selectedItem.name,
-              searchId: selectedItem.id,
-              searchCity: selectCity.name,
-              cityId: selectCity.id,
-              cityCoords : JSON.stringify(selectCity.coords),
-            }
-          }}
-          asChild
-        >
-          <Pressable
-            style={({ pressed }) => [
-              styles.button,
-              pressed && styles.buttonPressed,
-            ]}
+            </View>
+            {/* select location */}
+            <View >
+              <Text style={styles.dropdownTitle}>نام شهر (درصورت استفاده از GPS گزینه ای انتخاب نکنید)</Text>
+              <SearchableDropdown
+                onItemSelect={setSelectedCity}
+                items={city}
+                defaultIndex={0}
+                resetValue={false}
+                itemStyle={styles.dropdownItem}
+                itemTextStyle={{
+                  color: '#2D3748',
+                  textAlign: 'right',
+                  fontSize: 16,
+                }}
+                itemsContainerStyle={{
+                  backgroundColor: 'white',
+                  borderRadius: 12,
+                  marginTop: 8,
+                  maxHeight: 200,
+                }}
+                textInputProps={{
+                  placeholder: selectCity.name,
+                  style: styles.dropdownInput,
+                  placeholderTextColor: '#718096',
+                  underlineColorAndroid: 'transparent',
+                }}
+              />
+
+
+            </View>
+          </View>
+          </ScrollView>
+          <Link
+            href={{
+              pathname: '/map',
+              params: {
+                searchValue: selectedItem.name,
+                searchId: selectedItem.id,
+                searchCity: selectCity.name,
+                cityId: selectCity.id,
+                cityCoords: JSON.stringify(selectCity.coords),
+              }
+            }}
+            asChild
           >
-            <Text style={styles.buttonText}>جستجو</Text>
-          </Pressable>
-        </Link>
-    </View>
+            <Pressable
+              style={({ pressed }) => [
+                styles.button,
+                pressed && styles.buttonPressed,
+              ]}
+            >
+              <Text style={styles.buttonText}>جستجو</Text>
+            </Pressable>
+          </Link>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
