@@ -52,7 +52,7 @@ const MyLocationComponent = () => {
 
       try {
         console.log('django running')
-        const response = await fetch(`https://insurance.liara.run/api/?insurance_name=${searchValue.trim()}&lat=${location ? location.coords.latitude : 35.700264661345145}&lng=${location ? location.coords.longitude : 51.337807322871065}`, {
+        const response = await fetch(`https://insurance.liara.run/api/?insurance_name=${searchValue.trim()}&lat=${location ? location.coords.latitude : coords.lat}&lng=${location ? location.coords.longitude : coords.lng}&city=${searchCity}`, {
           method: "GET",
           redirect: "follow",
         });
