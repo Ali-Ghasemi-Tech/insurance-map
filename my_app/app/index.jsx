@@ -11,10 +11,10 @@ import {
   UIManager,
   findNodeHandle
 } from "react-native";
-
+// import { FlatList , gestureHandlerRootHOC, GestureHandlerRootView } from "react-native-gesture-handler";
 import SearchableDropdown from "react-native-searchable-dropdown";
 import { useNavigation } from '@react-navigation/native';
-import { useState, useEffect , useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from 'expo-router';
 
 
@@ -114,8 +114,8 @@ var city = [
 
 
 function App() {
-  const [selectedItem, setSelectedItem] = useState(items[0]);
-  const [selectCity, setSelectedCity] = useState(city[0]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectCity, setSelectedCity] = useState(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const flatListRef = useRef(null);
   const insuranceDropdownRef = useRef(null);
@@ -124,10 +124,10 @@ function App() {
   const handleScrollToElement = (ref) => {
     if (ref.current && flatListRef.current) {
       const scrollResponder = flatListRef.current.getScrollResponder();
-      
+
       // Get native component handle
       const nativeComponent = findNodeHandle(ref.current);
-      
+
       UIManager.measureLayout(
         nativeComponent,
         findNodeHandle(flatListRef.current),
@@ -174,7 +174,6 @@ function App() {
       textAlign: 'justify',
       lineHeight: 30,
       fontWeight: '600',
-      direction: 'rtl',
     },
     dropdownTitle: {
       fontSize: 10,
@@ -201,7 +200,13 @@ function App() {
       borderBottomWidth: 1,
       borderBottomColor: '#E2E8F0',
     },
-
+    buttonDisabled: {
+      backgroundColor: '#d3d3d3',  // Grayed out background for the disabled button
+    },
+    buttonTextDisabled: {
+      backgroundColor: '#d3d3d3',
+      color: '#aaa',  // Grayed out text color
+    },
     buttonText: {
       backgroundColor: '#4248fc', // More vibrant green
       borderRadius: 12,
@@ -325,118 +330,122 @@ function App() {
     //   </TouchableWithoutFeedback>
     // </KeyboardAvoidingView>
 
-
-        <FlatList
-          ref={flatListRef}
-          data={[{}]} // Empty data array with a single item
-          keyExtractor={() => 'scrollable-key'}
-          automaticallyAdjustKeyboardInsets={true}
-          keyboardDismissMode="none"
-          keyboardShouldPersistTaps="handled"
-          onEndReached={() => {return null}}
-          
-          renderItem={() => (
-            <View style={styles.container}>
-              <View style={styles.headerContainer}>
-                <Text style={styles.headerText}>
-                  با انتخاب بیمه ای که داری میتونی بیمارستانایی که نزدیکتن و بیمه تو هم پوشش میدن پیدا کنی
-                </Text>
-              </View>
-
-              {/* Content Container */}
-              <View style={{ gap: 15, marginTop: 40 }}>
-                {/* Insurance Selection */}
-                <View >
-                  <Text style={styles.dropdownTitle}>نام بیمه</Text>
-                  <SearchableDropdown
-                    ref={insuranceDropdownRef}
-                    onItemSelect={setSelectedItem}
-                    items={items}
-                    defaultIndex={0}
-                    resetValue={false}
-                    itemStyle={styles.dropdownItem}
-                    itemTextStyle={{
-                      color: '#2D3748',
-                      textAlign: 'right',
-                      fontSize: 16,
-                    }}
-                    itemsContainerStyle={{
-                      backgroundColor: 'white',
-                      borderRadius: 12,
-                      marginTop: 8,
-                      maxHeight: 200,
-                    }}
-                    textInputProps={{
-                      placeholder: selectedItem.name,
-                      style: styles.dropdownInput,
-                      placeholderTextColor: '#718096',
-                      underlineColorAndroid: 'transparent',
-                      onPress: () => handleScrollToElement(insuranceDropdownRef)
-                    }}
-                  />
-
-                </View>
-
-                {/* City Selection */}
-                <View >
-                  <Text style={styles.dropdownTitle}>نام شهر (درصورت استفاده از GPS گزینه ای انتخاب نکنید)</Text>
-                  <SearchableDropdown
-                    ref={cityDropdownRef}
-                    onItemSelect={setSelectedCity}
-                    items={city}
-                    defaultIndex={0}
-                    resetValue={false}
-                    itemStyle={styles.dropdownItem}
-                    itemTextStyle={{
-                      color: '#2D3748',
-                      textAlign: 'right',
-                      fontSize: 16,
-                    }}
-                    itemsContainerStyle={{
-                      backgroundColor: 'white',
-                      borderRadius: 12,
-                      marginTop: 8,
-                      maxHeight: 200,
-                    }}
-                    textInputProps={{
-                      placeholder: selectCity.name,
-                      style: styles.dropdownInput,
-                      placeholderTextColor: '#718096',
-                      underlineColorAndroid: 'transparent',
-                      onPress: () => handleScrollToElement(cityDropdownRef),
-                      
-                    }}
-                    
-                  />
-                </View>
-              </View>
-
-              {/* Search Button */}
-              <Link
-                href={{
-                  pathname: '/map',
-                  params: {
-                    searchValue: selectedItem.name,
-                    searchId: selectedItem.id,
-                    searchCity: selectCity.name,
-                    cityId: selectCity.id,
-                    cityCoords: JSON.stringify(selectCity.coords),
-                  }
-                }}
-                asChild
-              >
-                <Pressable
-                  style={({ pressed }) => [
-                    styles.button,
-                    pressed && styles.buttonPressed,
-                  ]}
-                >
-                  <Text style={styles.buttonText}>جستجو</Text>
-                </Pressable>
-              </Link>
+    <View>
+      <FlatList
+        ref={flatListRef}
+        data={[{}]} // Empty data array with a single item
+        automaticallyAdjustKeyboardInsets={true}
+        keyboardDismissMode="none"
+        nestedScrollEnabled={false}
+        keyboardShouldPersistTaps="handled"
+        renderItem={() => (
+          <View style={styles.container}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.headerText}>
+                با انتخاب بیمه ای که داری میتونی بیمارستانایی که نزدیکتن و بیمه تو هم پوشش میدن پیدا کنی
+              </Text>
             </View>
-          )}
-        />
+
+            {/* Content Container */}
+            <View style={{ gap: 15, marginTop: 40 }}>
+              {/* Insurance Selection */}
+              <View >
+                <Text style={styles.dropdownTitle}>نام بیمه</Text>
+                <SearchableDropdown
+
+                  ref={insuranceDropdownRef}
+                  onItemSelect={setSelectedItem}
+                  items={items}
+                  defaultIndex={0}
+                  resetValue={false}
+                  itemStyle={styles.dropdownItem}
+                  itemTextStyle={{
+                    color: '#2D3748',
+                    textAlign: 'right',
+                    fontSize: 16,
+                  }}
+                  itemsContainerStyle={{
+                    backgroundColor: 'white',
+                    borderRadius: 12,
+                    marginTop: 8,
+                    maxHeight: 200,
+                  }}
+                  textInputProps={{
+                    placeholder: selectedItem != null ? selectedItem.name : 'بطور مثال: ایران، البرز ، نیروهای مسلح و ...',
+                    style: styles.dropdownInput,
+                    placeholderTextColor: '#718096',
+                    underlineColorAndroid: 'transparent',
+                    onPress: () => handleScrollToElement(insuranceDropdownRef)
+                  }}
+                />
+
+              </View>
+
+              {/* City Selection */}
+              <View >
+                <Text style={styles.dropdownTitle}>نام شهر (درصورت استفاده از GPS گزینه ای انتخاب نکنید)</Text>
+                <SearchableDropdown
+                  ref={cityDropdownRef}
+                  onItemSelect={setSelectedCity}
+                  items={city}
+                  defaultIndex={0}
+                  resetValue={false}
+                  itemStyle={styles.dropdownItem}
+                  itemTextStyle={{
+                    color: '#2D3748',
+                    textAlign: 'right',
+                    fontSize: 16,
+                  }}
+                  itemsContainerStyle={{
+                    backgroundColor: 'white',
+                    borderRadius: 12,
+                    marginTop: 8,
+                    maxHeight: 200,
+                  }}
+                  textInputProps={{
+                    placeholder: selectCity ? selectCity.name : 'بطور مثال: تهران، اصفحان و ...',
+                    style: styles.dropdownInput,
+                    placeholderTextColor: '#718096',
+                    underlineColorAndroid: 'transparent',
+                    onPress: () => handleScrollToElement(cityDropdownRef),
+
+                  }}
+
+                />
+              </View>
+            </View>
+
+            {/* Search Button */}
+            <Link
+              href={{
+                pathname: '/map',
+                params: {
+                  searchValue: selectedItem? selectedItem.name : null,
+                  searchId: selectedItem ? selectedItem.id: null,
+                  searchCity: selectCity? selectCity.name : city[0].name,
+                  cityId:selectCity? selectCity.id: city[0].id,
+                  cityCoords: selectCity? JSON.stringify(selectCity.coords): JSON.stringify(city[0].coords),
+                }
+              }}
+              asChild
+            >
+              <Pressable
+                disabled={!selectedItem}  // Disable the button if selectedItem is null
+                style={({ pressed }) => [
+                  styles.button,
+                  pressed && styles.buttonPressed,
+                  !selectedItem && styles.buttonDisabled,  // Apply grayed-out style when disabled
+                ]}
+              >
+                <Text style={[styles.buttonText, !selectedItem && styles.buttonTextDisabled]}>
+                  جستجو
+                </Text>
+              </Pressable>
+            </Link>
+          </View>
+        )}
+      />
+    </View>
   );
 }
 
