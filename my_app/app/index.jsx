@@ -165,7 +165,7 @@ function App() {
     headerContainer: {
       borderBottomWidth: 1,
       borderBottomColor: '#E2E8F0',
-
+      direction: 'rtl',
       paddingTop: 40
     },
     headerText: {
