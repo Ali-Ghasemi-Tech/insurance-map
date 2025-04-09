@@ -9,7 +9,7 @@ import {
   Platform,
   FlatList,
   UIManager,
-  findNodeHandle
+  findNodeHandle,
 } from "react-native";
 // import { FlatList , gestureHandlerRootHOC, GestureHandlerRootView } from "react-native-gesture-handler";
 import SearchableDropdown from "react-native-searchable-dropdown";
@@ -103,12 +103,12 @@ var items = [
 ];
 
 var city = [
-  { id: 0, name: 'مکان فعلی من', coords: { lat: 35.700264661345145, lng: 51.337807322871065 } },
+  { id: 0, name: 'مکان فعلی من', coords: null },
   { id: 1, name: 'تهران', coords: { lat: 35.700264661345145, lng: 51.337807322871065 } },
   { id: 2, name: 'کرج', coords: { lat: 35.82928694170145, lng: 50.96736705072482 } },
   { id: 3, name: 'مشهد', coords: { lat: 36.297927914911895, lng: 59.60590934522712 } },
   { id: 4, name: 'شیراز', coords: { lat: 29.609164769331223, lng: 52.5320795545391 } },
-  { id: 5, name: 'اصفحان', coords: { lat: 32.65528067364776, lng: 51.67512579396133 } },
+  { id: 5, name: 'اصفهان', coords: { lat: 32.65528067364776, lng: 51.67512579396133 } },
 ]
 
 
@@ -202,10 +202,17 @@ function App() {
     },
     buttonDisabled: {
       backgroundColor: '#d3d3d3',  // Grayed out background for the disabled button
+      marginTop: 24,
     },
     buttonTextDisabled: {
       backgroundColor: '#d3d3d3',
       color: '#aaa',  // Grayed out text color
+      marginTop: 0
+    },
+    disabledText:{
+      color: 'red',
+      textAlign: 'right',
+      marginTop : 24
     },
     buttonText: {
       backgroundColor: '#4248fc', // More vibrant green
@@ -437,6 +444,7 @@ function App() {
                   !selectedItem && styles.buttonDisabled,  // Apply grayed-out style when disabled
                 ]}
               >
+                {!selectedItem ? <Text style= {styles.disabledText}>برای جستجو یک بیمه انتخاب کنید</Text> : null}
                 <Text style={[styles.buttonText, !selectedItem && styles.buttonTextDisabled]}>
                   جستجو
                 </Text>

@@ -17,9 +17,10 @@ const MyLocationComponent = () => {
   const [destinationsReady, setDestinationReady] = useState(false)
   const [firstRunDone, setFristRunDone] = useState(false)
   const [isLoading, setIsLoading] = useState(true);
-  const [mapHtml, setMapHtml] = useState(null);
+
 
   const coords = JSON.parse(cityCoords);
+
   
 
 
@@ -51,8 +52,13 @@ const MyLocationComponent = () => {
       console.log('start')
 
       try {
+        let request = `https://insurance.liara.run/api/?insurance_name=${searchValue.trim()}&lat=${location ? location.coords?.latitude : null}&lng=${location  ? location.coords?.longitude : null}&city=${searchCity}`
+
+        if (coords){
+          request = `https://insurance.liara.run/api/?insurance_name=${searchValue.trim()}&lat=${coords?.lat}&lng=${coords?.lng}&city=${searchCity}`
+        }
         console.log('django running')
-        const response = await fetch(`https://insurance.liara.run/api/?insurance_name=${searchValue.trim()}&lat=${location ? location.coords.latitude : coords.lat}&lng=${location ? location.coords.longitude : coords.lng}&city=${searchCity}`, {
+        const response = await fetch(request , {
           method: "GET",
           redirect: "follow",
         });
@@ -69,6 +75,7 @@ const MyLocationComponent = () => {
       }
       catch (e) {
         console.error(e.message)
+        throw new Error(e.message)
       }
 
     }
@@ -136,20 +143,25 @@ const MyLocationComponent = () => {
       <body>
         <div id="map"></div>
         <script>
-          var cityLat = ${coords.lat}
-          var cityLng = ${coords.lng}
-          var map = L.map('map').setView([cityLat, cityLng], 13);
+          var markerList = ${JSON.stringify(markers)};
+          var userLat = ${location ? location.coords.latitude : 'null'};
+          var userLng = ${location ? location.coords.longitude : 'null'};
+          var cityLat = ${coords ? coords.lat : 'null'};
+          var cityLng = ${coords ? coords.lng : 'null'};
+
+          var lat = cityLat !== null ? cityLat : userLat;
+          var lng = cityLng !== null ? cityLng : userLng;
+          
+
+
+          var map = L.map('map').setView([lat, lng], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-              maxZoom: 19,
+              maxZoom: 16,
               attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
           
-          var markerList = ${JSON.stringify(markers)};
-
-          
-          var userLat = ${location?.coords?.latitude || null};
-          var userLng = ${location?.coords?.longitude || null};
+         
 
           var bounds = [];
 
@@ -166,7 +178,6 @@ const MyLocationComponent = () => {
 
             bounds.push([marker.lat, marker.lng]);
           });
-
           if (userLat !== null && userLng !== null) {
           var userIcon = L.divIcon({
             className: 'user-location-icon',
@@ -178,7 +189,7 @@ const MyLocationComponent = () => {
           L.marker([userLat, userLng], { icon: userIcon })
             .addTo(map)
             .bindPopup("<b>موقعیت شما</b>");
-          bounds.push([userLat, userLng]);
+          bounds.add([userLat, userLng]);
         }
 
           if (bounds.length > 0) {
@@ -191,6 +202,7 @@ const MyLocationComponent = () => {
   return (
 
     <View style={{ flex: 1 }}>
+      
       <WebView
         originWhitelist={['*']}
         source={{ html }}
