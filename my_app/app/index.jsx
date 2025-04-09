@@ -12,7 +12,7 @@ import {
   findNodeHandle,
 } from "react-native";
 // import { FlatList , gestureHandlerRootHOC, GestureHandlerRootView } from "react-native-gesture-handler";
-import SearchableDropdown from "react-native-searchable-dropdown";
+import SearchableDropdown from "./searchableDropdown";
 import { useNavigation } from '@react-navigation/native';
 import { useState, useEffect, useRef } from "react";
 import { Link } from 'expo-router';
@@ -165,7 +165,7 @@ function App() {
     headerContainer: {
       borderBottomWidth: 1,
       borderBottomColor: '#E2E8F0',
-      direction: 'rtl',
+      textAlign: 'right',
       paddingTop: 40
     },
     headerText: {
@@ -174,6 +174,7 @@ function App() {
       textAlign: 'justify',
       lineHeight: 30,
       fontWeight: '600',
+      direction: 'ltr'
     },
     dropdownTitle: {
       fontSize: 10,
