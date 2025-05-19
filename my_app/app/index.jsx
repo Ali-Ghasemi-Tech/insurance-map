@@ -111,15 +111,31 @@ var city = [
   { id: 5, name: 'اصفهان', coords: { lat: 32.65528067364776, lng: 51.67512579396133 } },
 ]
 
+var medical_class = [
+  { id: 0, name: 'بیمارستان'},
+  { id: 1, name: 'درمانگاه' },
+  { id: 2, name: 'دندان پزشکی'},
+  { id: 3, name: 'مرکز درمان کودکان'},
+  { id: 4, name: 'آزمایشگاه'},
+  { id: 5, name: 'داروخانه'},
+  { id: 6, name: 'چشم پزشکی'},
+  { id: 7, name: 'مرکز درمانی شبانه روزی'},
+  { id: 8, name: 'کلینیک'},
+  { id: 9, name: 'مرکز جراحی'},
+
+]
+
 
 
 function App() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectCity, setSelectedCity] = useState(null);
+  const [selectedClass , setSelectedClass] = useState(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const flatListRef = useRef(null);
   const insuranceDropdownRef = useRef(null);
   const cityDropdownRef = useRef(null);
+  const ClassDropdownRef = useRef(null);
 
   const handleScrollToElement = (ref) => {
     if (ref.current && flatListRef.current) {
@@ -134,7 +150,7 @@ function App() {
         (error) => console.error('Error:', error),
         (x, y) => {
           scrollResponder.scrollTo({
-            y: y - 40,  // Adjust offset as needed
+            y: y - 100,  // Adjust offset as needed
             animated: true
           });
         }
@@ -166,15 +182,16 @@ function App() {
       borderBottomWidth: 1,
       borderBottomColor: '#E2E8F0',
       textAlign: 'right',
-      paddingTop: 40
+      paddingTop: 40,
+      paddingBottom: 40,
     },
     headerText: {
-      fontSize: 20,
+      fontSize: 19,
       color: '#2D3748',
       textAlign: 'justify',
       lineHeight: 30,
       fontWeight: '600',
-      direction: 'ltr'
+      direction: 'rtl'
     },
     dropdownTitle: {
       fontSize: 10,
@@ -184,7 +201,7 @@ function App() {
       fontWeight: '600',
     },
     dropdownContainer: {
-      marginTop: 40,
+      marginTop: 2,
     },
     dropdownInput: {
       backgroundColor: 'white',
@@ -355,7 +372,7 @@ function App() {
             </View>
 
             {/* Content Container */}
-            <View style={{ gap: 15, marginTop: 40 }}>
+            <View style={{ gap: 15, marginTop: 15 }}>
               {/* Insurance Selection */}
               <View >
                 <Text style={styles.dropdownTitle}>نام بیمه</Text>
@@ -384,6 +401,38 @@ function App() {
                     placeholderTextColor: '#718096',
                     underlineColorAndroid: 'transparent',
                     onPress: () => handleScrollToElement(insuranceDropdownRef)
+                  }}
+                />
+
+              </View>
+
+              <View >
+                <Text style={styles.dropdownTitle}>مرکز درمانی (پیشفرض : بیمارستان) </Text>
+                <SearchableDropdown
+
+                  ref={ClassDropdownRef}
+                  onItemSelect={setSelectedClass}
+                  items={medical_class}
+                  defaultIndex={0}
+                  resetValue={false}
+                  itemStyle={styles.dropdownItem}
+                  itemTextStyle={{
+                    color: '#2D3748',
+                    textAlign: 'right',
+                    fontSize: 16,
+                  }}
+                  itemsContainerStyle={{
+                    backgroundColor: 'white',
+                    borderRadius: 12,
+                    marginTop: 8,
+                    maxHeight: 200,
+                  }}
+                  textInputProps={{
+                    placeholder: selectedClass != null ? selectedClass.name : 'بطور مثال: بیمارستان ، درمانگاه ، داروخانه و ...',
+                    style: styles.dropdownInput,
+                    placeholderTextColor: '#718096',
+                    underlineColorAndroid: 'transparent',
+                    onPress: () => handleScrollToElement(ClassDropdownRef)
                   }}
                 />
 
@@ -421,6 +470,8 @@ function App() {
 
                 />
               </View>
+
+              
             </View>
 
             {/* Search Button */}
@@ -433,6 +484,7 @@ function App() {
                   searchCity: selectCity? selectCity.name : city[0].name,
                   cityId:selectCity? selectCity.id: city[0].id,
                   cityCoords: selectCity? JSON.stringify(selectCity.coords): JSON.stringify(city[0].coords),
+                  facility : selectedClass? selectedClass.name: medical_class[0].name
                 }
               }}
               asChild
