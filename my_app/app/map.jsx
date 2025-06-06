@@ -69,7 +69,7 @@ const MyLocationComponent = () => {
           request = `https://insurance-map-backend1.liara.run/hospital-locations?insurance_name=${searchValue.trim()}&lat=${coords?.lat}&lng=${coords?.lng}&selected_city=${searchCity}&selected_class=${facility}`
         }
         console.log(request)
-        console.log('django running')
+        console.log('api running')
         const response = await fetch(request, {
           method: "GET",
           redirect: "follow",
@@ -107,13 +107,13 @@ const MyLocationComponent = () => {
 
     setFristRunDone(true)
 
-    if (!destinationsReady && firstRunDone && location || coords) {
+    if (!destinationsReady && location || coords) {
       handleApi();
       setIsLoading(false)
 
     }
 
-  }, [location, firstRunDone]);
+  }, [location]);
 
   useEffect(() => {
     if (errorMsg) {
@@ -302,7 +302,7 @@ const MyLocationComponent = () => {
       </body>
     </html>
     `);
-  }, [location, destinations, markers ,  isLoading, showModal])
+  }, [location, destinations, markers , isLoading, showModal])
 
   
 
